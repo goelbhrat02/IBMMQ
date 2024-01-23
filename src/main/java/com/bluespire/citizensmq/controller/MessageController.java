@@ -45,32 +45,17 @@ public class MessageController {
 	private long requestReceivedTime;
 	private long responseSendTime;
 	
-//	@Autowired
-//	private GetAllMessage allMsg;
-	
-	@PostMapping("send")
-	public ResponseEntity<String> putMessage() throws JMSException {
-		String response = sender.sendMessageToQueue();
-		return new ResponseEntity<String>(response, HttpStatus.OK);
-	}
-	
-	@GetMapping("/receive/{corrID}")
-	public ResponseEntity<String> receiveMessage(@PathVariable String corrID) throws UnsupportedEncodingException, JMSException, javax.jms.JMSException {
-		String receiveMessageByCorrelationId = receiver.receiveMessageByCorrelationId(corrID);
-		return new ResponseEntity<String>(receiveMessageByCorrelationId, HttpStatus.FOUND);
-	}
-	
 	@GetMapping("request")
 	public String getMethodName() throws JMSException {
 //		Instant requestReceivedTime = Instant.now();
 		requestReceivedTime = System.currentTimeMillis();
-		logger.info("Contoller : Request received time : {}", requestReceivedTime);
+//		logger.info("Contoller : Request received time : {}", requestReceivedTime);
 		
 	
 		String response = requestResponseHandler.callMq();
 		
 		responseSendTime=System.currentTimeMillis();
-		logger.info("Controller : Respond sent time : {}",responseSendTime);
+//		logger.info("Controller : Respond sent time : {}",responseSendTime);
 		
 		long processTime=responseSendTime - requestReceivedTime;
 		logger.info("Contoller :Time Taken to complete request : {}",processTime);

@@ -3,8 +3,6 @@ package com.bluespire.citizensmq.service;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 
-import com.bluespire.citizensmq.model.MessageBody;
-
 import jakarta.jms.BytesMessage;
 import lombok.extern.log4j.Log4j2;
 
