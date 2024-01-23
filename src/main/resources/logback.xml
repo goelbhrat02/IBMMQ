@@ -30,7 +30,7 @@
     </appender>
     <!-- File appender 1-->
 
-    <appender name="file2" class="ch.qos.logback.core.FileAppender">
+    <appender name="FILE2" class="ch.qos.logback.core.FileAppender">
 
         <file>logs/file2.log</file>
 
@@ -45,16 +45,17 @@
     </appender>
 
 
-    <!-- Root logger -->
+    <!-- Root logger IBMMQProject -->
 
     <root level="info">
 
-        <appender-ref ref="console"/>
+       
 
         <appender-ref ref="file1"/>
-        <appender-ref ref="file2"/>
-        
-
+       
     </root>
+    <logger name="com.bluespire.citizensmq.controller" level="info">
+        <appender-ref ref="FILE2"/>
+    </logger>
 
 </configuration>

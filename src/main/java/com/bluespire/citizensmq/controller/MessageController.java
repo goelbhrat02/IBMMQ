@@ -40,6 +40,8 @@ public class MessageController {
 	private RequestRespondHandler requestResponseHandler;
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	
+	
 	private long requestReceivedTime;
 	private long responseSendTime;
 	
@@ -63,13 +65,16 @@ public class MessageController {
 //		Instant requestReceivedTime = Instant.now();
 		requestReceivedTime = System.currentTimeMillis();
 		logger.info("Contoller : Request received time : {}", requestReceivedTime);
+		
 	
 		String response = requestResponseHandler.callMq();
 		
 		responseSendTime=System.currentTimeMillis();
 		logger.info("Controller : Respond sent time : {}",responseSendTime);
+		
 		long processTime=responseSendTime - requestReceivedTime;
 		logger.info("Contoller :Time Taken to complete request : {}",processTime);
+		
 		
 		return response;
 	}
