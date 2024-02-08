@@ -8,10 +8,7 @@ import com.ibm.msg.client.jakarta.jms.JmsMessage;
 import com.ibm.jakarta.jms.JMSBytesMessage;
 
 import java.io.UnsupportedEncodingException;
-import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalTime;
-
 import jakarta.jms.BytesMessage;
 import jakarta.jms.JMSException;
 import jakarta.jms.Message;
@@ -21,7 +18,7 @@ import org.slf4j.LoggerFactory;
 
 @Service
 public class MessageReceiver {
-	private static Integer counter=0;
+
 	private final JmsTemplate jmsTemplate;
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -32,32 +29,26 @@ public class MessageReceiver {
 	}
 
 	public String receiveMessageByCorrelationId(String correlationId) throws jakarta.jms.JMSException {
-		LocalTime requestTime = LocalTime.now();
-		// Set a receive timeout in milliseconds
-		jmsTemplate.setReceiveTimeout(20000);
+		// Set a receive timeout in milliseconds (e.g., 5000 for 5 seconds)
+		jmsTemplate.setReceiveTimeout(30000);
 
 		// Receive the message
 		JMSMessage receivedMessage = (JMSMessage) jmsTemplate.receiveSelected("DEV.QUEUE.2",
 				"JMSCorrelationID='" + correlationId + "'");
-		
 //		System.out.println("Received message is : " + receivedMessage);
 		if (receivedMessage != null) {
 			logger.info("MessageReceiver    message received    corrId : {}" , receivedMessage.getJMSCorrelationID());
-			LocalTime responseTime = LocalTime.now();
-//			System.out.println("response time -> "+Duration.between(responseTime, requestTime).toMillis());
 		}
-		
-		
+
+//		return extractMessageBody(receivedMessage);
+
 		if (receivedMessage != null) {
 			String messageBodyStringg = receivedMessage.toString();
 			messageReceivedTime = Instant.now();
 			logger.info("Services : Message Receiver :Time :{}", messageReceivedTime);
 			return messageBodyStringg;
 		} else
-		{
-//			System.out.println("counter   ----------------------------------> "+ counter);
-			return "";
-		}
+			return "msg not found";
 	}
 
 	private String extractMessageBody(JmsMessage message) throws JMSException {

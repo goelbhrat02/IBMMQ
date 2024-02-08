@@ -1,10 +1,7 @@
 package com.bluespire.citizensmq.controller;
 
 import java.io.UnsupportedEncodingException;
-import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalTime;
-import java.time.Period;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,10 +9,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
+import com.bluespire.citizensmq.model.AccountDetails;
+import com.bluespire.citizensmq.model.SavingsAccount;
+import com.bluespire.citizensmq.service.GetAccountDetailsService;
 import com.bluespire.citizensmq.service.MessageReceiver;
 //import com.bluespire.citizensmq.service.MessageSender;
 import com.bluespire.citizensmq.service.MessageSender;
@@ -37,6 +37,9 @@ public class MessageController {
 	private MessageSender sender;
 	
 	@Autowired
+	private GetAccountDetailsService getAccountdetailsService;
+	
+	@Autowired
 	private MessageReceiver receiver;
 	
 	@Autowired
@@ -48,28 +51,46 @@ public class MessageController {
 	private long requestReceivedTime;
 	private long responseSendTime;
 	
+//	@Autowired
+//	private GetAllMessage allMsg;
+	
+	@PostMapping("send")
+	public ResponseEntity<String> putMessage() throws JMSException {
+		String response = sender.sendMessageToQueue();
+		return new ResponseEntity<String>(response, HttpStatus.OK);
+	}
+	
+	@GetMapping("/receive/{corrID}")
+	public ResponseEntity<String> receiveMessage(@PathVariable String corrID) throws UnsupportedEncodingException, JMSException, javax.jms.JMSException {
+		String receiveMessageByCorrelationId = receiver.receiveMessageByCorrelationId(corrID);
+		return new ResponseEntity<String>(receiveMessageByCorrelationId, HttpStatus.FOUND);
+	}
+	
+	@PostMapping("details")
+	public AccountDetails getAccountDetails(@RequestBody SavingsAccount savingsAccount ) {
+		
+		
+		return null;
+		
+	}
+	
 	@GetMapping("request")
-	public ResponseEntity<String> getMethodName() throws JMSException {
+	public String getMethodName() throws JMSException {
 //		Instant requestReceivedTime = Instant.now();
 		requestReceivedTime = System.currentTimeMillis();
-		LocalTime requestTime = LocalTime.now();
-//		logger.info("Contoller : Request received time : {}", requestReceivedTime);
+		logger.info("Contoller : Request received time : {}", requestReceivedTime);
 		
 	
 		String response = requestResponseHandler.callMq();
 		
-		LocalTime responseTime = LocalTime.now();
-//		System.out.println("response time -> "+Duration.between(responseTime, requestTime).toMillis());
-		
 		responseSendTime=System.currentTimeMillis();
-//		logger.info("Controller : Respond sent time : {}",responseSendTime);
+		logger.info("Controller : Respond sent time : {}",responseSendTime);
 		
 		long processTime=responseSendTime - requestReceivedTime;
 		logger.info("Contoller :Time Taken to complete request : {}",processTime);
 		
-		if(response != "")
-		return new ResponseEntity<String>(response, HttpStatus.OK);
-		else return new ResponseEntity<>(HttpStatus.REQUEST_TIMEOUT);
+		
+		return response;
 	}
 	
 	

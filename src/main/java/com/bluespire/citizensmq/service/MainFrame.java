@@ -2,7 +2,6 @@ package com.bluespire.citizensmq.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -23,20 +22,14 @@ public class MainFrame {
 	private long messageReceivedTime;
 	private long replySentTime;
 	private long timeTakenToProcessAndSendReply;
-	
-	@Value("${queue.input}")
-	private String requestQueue;
-	@Value("${queue.output}")
-	private String responseQueue;
 
 	public MainFrame(JmsTemplate jmsTemplate, ThreadPoolTaskExecutor taskExecutor) {
 		this.jmsTemplate = jmsTemplate;
 		this.taskExecutor = taskExecutor;
 	}
 
-	@JmsListener(destination = "${queue.input}")
+	@JmsListener(destination = "DEV.QUEUE.1")
 	public void receiveMessage(JMSMessage receivedMessage) throws JMSException {
-//		System.out.println("receive message function ${queue.input}");
 
 //        System.out.println("Received Message: " + receivedMessage);
 		messageReceivedTime=System.currentTimeMillis();
@@ -61,7 +54,7 @@ public class MainFrame {
 				replyMessage.setJMSMessageID(receivedMessage.getJMSMessageID());
 
 				// Sending the reply message to the output queue
-				jmsTemplate.convertAndSend(responseQueue, replyMessage);
+				jmsTemplate.convertAndSend("DEV.QUEUE.2", replyMessage);
 				replySentTime=System.currentTimeMillis();
 				logger.info("Mainframe:Reply sent : {}",replySentTime);
 				timeTakenToProcessAndSendReply=replySentTime-messageReceivedTime;

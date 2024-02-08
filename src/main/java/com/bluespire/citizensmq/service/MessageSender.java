@@ -1,8 +1,9 @@
 package com.bluespire.citizensmq.service;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
+
+import com.bluespire.citizensmq.model.MessageBody;
 
 import jakarta.jms.BytesMessage;
 import lombok.extern.log4j.Log4j2;
@@ -20,9 +21,6 @@ public class MessageSender {
     private final JmsTemplate jmsTemplate;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private Instant messageSenderTime;
-    
-    @Value("${queue.input}")
-    private String inputQueue;
 
     public MessageSender(JmsTemplate jmsTemplate) {
         this.jmsTemplate = jmsTemplate;
@@ -37,7 +35,6 @@ public class MessageSender {
     }
     
     public String sendMessageToQueue() throws jakarta.jms.JMSException {
-    	System.out.println("input queue name is : "+inputQueue);
         String message = createMessage();
         byte[] messageBytes;
         String[] correlationId = { "emptyString" }; // Using an array to make it mutable
