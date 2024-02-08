@@ -1,0 +1,4 @@
+queueManager: QM1
+queue:
+  input: DEV.QUEUE.1
+  output: DEV.QUEUE.2
