@@ -1,5 +1,6 @@
 package com.bluespire.citizensmq.controller;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.time.Instant;
 
@@ -55,7 +56,7 @@ public class MessageController {
 //	private GetAllMessage allMsg;
 	
 	@PostMapping("details")
-	public String getAccountDetails(@RequestBody SavingsAccount savingsAccount ) {
+	public String getAccountDetails(@RequestBody SavingsAccount savingsAccount ) throws IOException {
 		String response = requestResponseHandler.callMq(savingsAccount);
 		
 		return response;
@@ -63,7 +64,7 @@ public class MessageController {
 	}
 	
 	@PostMapping("send")
-	public ResponseEntity<String> putMessage() throws JMSException {
+	public ResponseEntity<String> putMessage() throws Exception {
 		String response = sender.sendMessageToQueue(null);
 		return new ResponseEntity<String>(response, HttpStatus.OK);
 	}
@@ -76,7 +77,7 @@ public class MessageController {
 	
 	
 	@GetMapping("request")
-	public String getMethodName() throws JMSException {
+	public String getMethodName() throws Exception {
 //		Instant requestReceivedTime = Instant.now();
 		requestReceivedTime = System.currentTimeMillis();
 		logger.info("Contoller : Request received time : {}", requestReceivedTime);
