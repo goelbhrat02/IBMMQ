@@ -4,7 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.JmsException;
 import org.springframework.stereotype.Component;
 
+import com.bluespire.citizensmq.model.SavingsAccount;
+
 import jakarta.jms.JMSException;
+
+import java.io.IOException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,9 +26,9 @@ public class RequestRespondHandler {
 		this.receiver = receiver;
 	}
 	
-	public String callMq() {
+	public String callMq(SavingsAccount savingsAccount) throws IOException {
 		try {
-			String correlationId = sender.sendMessageToQueue();
+			String correlationId = sender.sendMessageToQueue(savingsAccount);
 			String response = receiver.receiveMessageByCorrelationId(correlationId);
 			return response;
 		}

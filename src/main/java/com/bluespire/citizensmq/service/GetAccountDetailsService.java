@@ -15,14 +15,12 @@ import com.google.gson.JsonParser;
 @Service
 public class GetAccountDetailsService {
 	
-	@Autowired
-	private  MainFrame mainframe;
 	
-	
-	public byte[] jsonToEbcdic(JsonObject jsonObject) throws IOException {
-        String jsonString = new ObjectMapper().writeValueAsString(jsonObject);
-        return jsonString.getBytes(Charset.forName("IBM1047")); 
-    }//sdkjciu
+	public byte[] jsonToEbcdic(Object object) throws IOException {
+//        String jsonString = new ObjectMapper().writeValueAsString(jsonObject);
+		String objectToString=object.toString();
+        return objectToString.getBytes(Charset.forName("IBM1047")); 
+    }
 	
 	public JsonObject ebcdicToJson(byte[] ebcdicData) throws IOException {
         String jsonData = new String(ebcdicData, Charset.forName("IBM1047")); 

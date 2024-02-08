@@ -55,16 +55,16 @@ public class MessageController {
 //	private GetAllMessage allMsg;
 	
 	@PostMapping("details")
-	public AccountDetails getAccountDetails(@RequestBody SavingsAccount savingsAccount ) {
+	public String getAccountDetails(@RequestBody SavingsAccount savingsAccount ) {
+		String response = requestResponseHandler.callMq(savingsAccount);
 		
-		//kushd
-		return null;
+		return response;
 		
 	}
 	
 	@PostMapping("send")
 	public ResponseEntity<String> putMessage() throws JMSException {
-		String response = sender.sendMessageToQueue();
+		String response = sender.sendMessageToQueue(null);
 		return new ResponseEntity<String>(response, HttpStatus.OK);
 	}
 	
@@ -82,7 +82,7 @@ public class MessageController {
 		logger.info("Contoller : Request received time : {}", requestReceivedTime);
 		
 	
-		String response = requestResponseHandler.callMq();
+		String response = requestResponseHandler.callMq(null);
 		
 		responseSendTime=System.currentTimeMillis();
 		logger.info("Controller : Respond sent time : {}",responseSendTime);

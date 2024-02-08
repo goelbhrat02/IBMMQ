@@ -43,6 +43,7 @@ public class MessageReceiver {
 //		return extractMessageBody(receivedMessage);
 
 		if (receivedMessage != null) {
+			
 			String messageBodyStringg = receivedMessage.toString();
 			messageReceivedTime = Instant.now();
 			logger.info("Services : Message Receiver :Time :{}", messageReceivedTime);
@@ -50,6 +51,9 @@ public class MessageReceiver {
 		} else
 			return "msg not found";
 	}
+	
+	
+	
 
 	private String extractMessageBody(JmsMessage message) throws JMSException {
 		// Check if the message is a TextMessage
