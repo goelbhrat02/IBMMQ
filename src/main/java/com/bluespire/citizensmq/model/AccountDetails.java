@@ -37,6 +37,7 @@ public class AccountDetails {
 	public AccountDetails() {
 		super();
 		// TODO Auto-generated constructor stub
+		//suhih
 	}
 	public AccountDetails(String name, String ifsc, int balance, String accountType) {
 		super();

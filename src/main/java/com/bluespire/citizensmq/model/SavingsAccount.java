@@ -1,18 +1,19 @@
 package com.bluespire.citizensmq.model;
 
 public class SavingsAccount {
-private int accountNumber;
+private long accountNumber;
 private int routingNumber;
-public int getAccountNumber() {
+public long getAccountNumber() {
 	return accountNumber;
 }
-public void setAccountNumber(int accountNumber) {
+public void setAccountNumber(long accountNumber) {
 	this.accountNumber = accountNumber;
 }
 public int getRoutingNumber() {
+	//lsUIc
 	return routingNumber;
 }
-public SavingsAccount(int accountNumber, int routingNumber) {
+public SavingsAccount(long accountNumber, int routingNumber) {
 	super();
 	this.accountNumber = accountNumber;
 	this.routingNumber = routingNumber;

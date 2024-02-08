@@ -1,20 +1,32 @@
 package com.bluespire.citizensmq.service;
 
+import java.io.IOException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.ibm.jakarta.jms.JMSMessage;
 
 import jakarta.jms.JMSException;
 import jakarta.jms.Message;
 
+
 @Service
 public class MainFrame {
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());		
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());	
+	 
+	@Autowired
+	private  GetAccountDetailsService getAccountDetailsService;
 	
 
 	private final JmsTemplate jmsTemplate;
@@ -46,6 +58,7 @@ public class MainFrame {
 		taskExecutor.execute(() -> {
 			try {
 				Thread.sleep(10000);
+				//slfijd
 
 				Message replyMessage = jmsTemplate.execute(session -> session.createMessage());
 
@@ -66,5 +79,14 @@ public class MainFrame {
 				logger.error("error in mainframe : {}",e);
 			}
 		});
+	}
+	
+	public byte[] processEbcdic(byte[] ebcdicData) throws IOException {
+		JsonObject inputJsonData=getAccountDetailsService.ebcdicToJson(ebcdicData);
+		String outputStringData="{\"name\":\"Sai Priya\",\"ifscCode\":\"ICIC0001111\",\"balance\":25000,\"accountType\":\"savings\"}";
+		JsonParser jsonParser = new JsonParser();
+		JsonObject jsonObject = jsonParser.parse(outputStringData).getAsJsonObject();
+		byte[] ebcdicResultData=getAccountDetailsService.jsonToEbcdic(jsonObject);
+		return ebcdicResultData;
 	}
 }

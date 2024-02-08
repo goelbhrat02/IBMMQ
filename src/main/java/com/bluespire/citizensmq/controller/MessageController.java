@@ -54,6 +54,14 @@ public class MessageController {
 //	@Autowired
 //	private GetAllMessage allMsg;
 	
+	@PostMapping("details")
+	public AccountDetails getAccountDetails(@RequestBody SavingsAccount savingsAccount ) {
+		
+		//kushd
+		return null;
+		
+	}
+	
 	@PostMapping("send")
 	public ResponseEntity<String> putMessage() throws JMSException {
 		String response = sender.sendMessageToQueue();
@@ -66,13 +74,6 @@ public class MessageController {
 		return new ResponseEntity<String>(receiveMessageByCorrelationId, HttpStatus.FOUND);
 	}
 	
-	@PostMapping("details")
-	public AccountDetails getAccountDetails(@RequestBody SavingsAccount savingsAccount ) {
-		
-		
-		return null;
-		
-	}
 	
 	@GetMapping("request")
 	public String getMethodName() throws JMSException {
