@@ -2,22 +2,24 @@ package com.bluespire.citizensmq.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
-import javax.jms.BytesMessage;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import org.springframework.stereotype.Service;
 
-import com.ibm.jakarta.jms.JMSMessage;
+import com.ibm.jms.JMSBytesMessage;
 import com.ibm.msg.client.jakarta.jms.JmsMessage;
 import com.bluespire.citizensmq.model.AccountDetails;
 import com.google.gson.JsonObject;
-import com.ibm.jakarta.jms.JMSBytesMessage;
+
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+
+import jakarta.jms.BytesMessage;
 import jakarta.jms.JMSException;
 import jakarta.jms.Message;
 import jakarta.jms.TextMessage;
@@ -40,12 +42,12 @@ public class MessageReceiver {
 		this.jmsTemplate = jmsTemplate;
 	}
 
-	public Object receiveMessageByCorrelationId(String correlationId) throws jakarta.jms.JMSException, IOException {
+	public String receiveMessageByCorrelationId(String correlationId) throws jakarta.jms.JMSException, IOException, javax.jms.JMSException {
 		// Set a receive timeout in milliseconds (e.g., 5000 for 5 seconds)
 		jmsTemplate.setReceiveTimeout(30000);
 
 		// Receive the message
-		JMSMessage receivedMessage = (JMSMessage) jmsTemplate.receiveSelected("DEV.QUEUE.2",
+		BytesMessage receivedMessage = (BytesMessage) jmsTemplate.receiveSelected("DEV.QUEUE.2",
 				"JMSCorrelationID='" + correlationId + "'");
 //		System.out.println("Received message is : " + receivedMessage);
 		if (receivedMessage != null) {
@@ -56,28 +58,36 @@ public class MessageReceiver {
 
 		if (receivedMessage != null) {
 			
-			System.out.println("Received message:"+receivedMessage);
-			String messageBodyStringg = receivedMessage.toString();
-			String[] lines = messageBodyStringg.split("\n");
-	        
-	        // Get the last line`
-	        String lastLine = lines[lines.length - 3]+"\n"+lines[lines.length - 2]+"\n"+lines[lines.length - 1];
-	        byte[] code=lastLine.getBytes(Charset.forName("IBM1047"));
-	        
-	        for(byte b:code)System.out.println(b);
-			messageReceivedTime = Instant.now();
-			logger.info("Services : Message Receiver :Time :{}", messageReceivedTime);
-			String output=getAccountDetailsService.ebcdicToJson(code);
-			System.out.println(output);
-			return output;
+//			String messageBodyStringg = receivedMessage.toString();
+//			String[] lines = messageBodyStringg.split("\n");
+//	        
+//	        // Get the last line`
+//	        String lastLine = lines[lines.length - 2]+"\n"+lines[lines.length - 1];
+//	        byte[] code=lastLine.getBytes(Charset.forName("IBM1047"));
+//	        
+//			messageReceivedTime = Instant.now();
+//			logger.info("Services : Message Receiver :Time :{}", messageReceivedTime);
+//			String output=getAccountDetailsService.ebcdicToJson(code);
+//			return output;
+			
+			
+				byte[] bytes=new byte[(int)receivedMessage.getBodyLength()];
+				receivedMessage.readBytes(bytes);
+				System.out.println(bytes);
+				for(byte b:bytes)System.out.println(b);
+				String str=getAccountDetailsService.ebcdicToJson(bytes);
+				return str;
+				
+			
 		} else
-			return "msg not found";
+			return null;
+	
 	}
 	
 	
 	
 
-	private String extractMessageBody(JmsMessage message) throws JMSException {
+	private String extractMessageBody(JmsMessage message) throws JMSException, javax.jms.JMSException {
 		// Check if the message is a TextMessage
 		try {
 			if (message instanceof TextMessage) {

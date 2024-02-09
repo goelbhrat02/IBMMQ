@@ -46,7 +46,7 @@ public class MainFrame {
 	@JmsListener(destination = "DEV.QUEUE.1")
 	public void receiveMessage(JMSMessage receivedMessage) throws JMSException {
 
-//        System.out.println("Received Message: " + receivedMessage);
+        System.out.println("Received Message: " + receivedMessage);
 		messageReceivedTime = System.currentTimeMillis();
 		logger.info("Mainframe:Received Message : {}", messageReceivedTime);
 
@@ -101,7 +101,7 @@ public class MainFrame {
 
 		byte[] ebcdicResultData = getAccountDetailsService.jsonToEbcdic(accountDetails);
 //		System.out.println(ebcdicResultData);
-		for(byte b:ebcdicResultData) System.out.println(b);
+	
 		return ebcdicResultData;
 		
 	}
