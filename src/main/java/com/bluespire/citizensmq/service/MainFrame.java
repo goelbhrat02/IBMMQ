@@ -37,7 +37,7 @@ public class MainFrame {
 	private long replySentTime;
 	private long timeTakenToProcessAndSendReply;
 
-	public MainFrame(JmsTemplate jmsTemplate, ThreadPoolTaskExecutor taskExecutor, AccountDetails accountDetails) {
+	public MainFrame(JmsTemplate jmsTemplate, ThreadPoolTaskExecutor taskExecutor) {
 		this.jmsTemplate = jmsTemplate;
 		this.taskExecutor = taskExecutor;
 //		this.accountDetails=accountDetails;
@@ -54,6 +54,8 @@ public class MainFrame {
 			logger.info("MainFrame message received corrID-> : {}", receivedMessage.getJMSCorrelationID());
 		// System.out.println("MainFrame message received corrID->" +
 		// receivedMessage.getJMSCorrelationID());
+		
+		
 
 		replyAsync(receivedMessage, messageReceivedTime);
 	}
@@ -61,7 +63,7 @@ public class MainFrame {
 	public void replyAsync(JMSMessage receivedMessage, long messageReceisvedTime) {
 		taskExecutor.execute(() -> {
 			try {
-				Thread.sleep(10000);
+				Thread.sleep(0);
 
 				// System.out.println("Reply sent: " + replyMessage);
 
@@ -69,7 +71,7 @@ public class MainFrame {
 						timeTakenToProcessAndSendReply);
 				// System.out.println(Thread.currentThread().getId());
 
-				jmsTemplate.send("DEV.QUEUE2", session -> {
+				jmsTemplate.send("DEV.QUEUE.2", session -> {
 					BytesMessage message = session.createBytesMessage();
 					try {
 						message.writeBytes(processEbcdic());
@@ -93,10 +95,14 @@ public class MainFrame {
 	}
 
 	public byte[] processEbcdic() throws IOException {
+		
 
 		AccountDetails accountDetails = new AccountDetails("Sai Priya", "SBIN0020538", 45678, "savings");
 
 		byte[] ebcdicResultData = getAccountDetailsService.jsonToEbcdic(accountDetails);
+//		System.out.println(ebcdicResultData);
+		for(byte b:ebcdicResultData) System.out.println(b);
 		return ebcdicResultData;
+		
 	}
 }

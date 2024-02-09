@@ -26,7 +26,7 @@ public void setRoutingNumber(int routingNumber) {
 	this.routingNumber = routingNumber;
 }
  public String toString() {
-	 return "account number:"+this.accountNumber+"/n"+"routing number:"+this.routingNumber;
+	 return "{"+"account number:"+this.accountNumber+","+"routing number:"+this.routingNumber+"}";
 	 
  }
 

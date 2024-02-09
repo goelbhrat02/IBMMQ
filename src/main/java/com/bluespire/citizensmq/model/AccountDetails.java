@@ -29,15 +29,16 @@ public class AccountDetails {
 	public void setAccountType(String accountType) {
 		this.accountType = accountType;
 	}
-	@Override
+	
+		@Override
 	public String toString() {
-		return "AccountDetails [name=" + name + ", ifsc=" + ifsc + ", balance=" + balance + ", accountType="
-				+ accountType + "]";
+		return "{"+"name:" + name + ", ifsc:" + ifsc + ", balance:" + balance + ", accountType:"
+				+ accountType+"}" ;
 	}
-	public AccountDetails() {
+		public AccountDetails() {
 		super();
 		// TODO Auto-generated constructor stub
-		//suhih
+		
 	}
 	public AccountDetails(String name, String ifsc, int balance, String accountType) {
 		super();

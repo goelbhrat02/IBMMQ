@@ -19,14 +19,16 @@ public class GetAccountDetailsService {
 	public byte[] jsonToEbcdic(Object object) throws IOException {
 //        String jsonString = new ObjectMapper().writeValueAsString(jsonObject);
 		String objectToString=object.toString();
+		System.out.println(objectToString);
         return objectToString.getBytes(Charset.forName("IBM1047")); 
     }
 	
-	public JsonObject ebcdicToJson(byte[] ebcdicData) throws IOException {
+	public String ebcdicToJson(byte[] ebcdicData) throws IOException {
         String jsonData = new String(ebcdicData, Charset.forName("IBM1047")); 
-        JsonParser jsonParser = new JsonParser();
-		JsonObject jsonObject = jsonParser.parse(jsonData).getAsJsonObject();
-        return jsonObject;
+        System.out.println(jsonData);
+//        JsonParser jsonParser = new JsonParser();
+//		JsonObject jsonObject = jsonParser.parse(jsonData).getAsJsonObject();
+        return jsonData;
     }
 	
 	

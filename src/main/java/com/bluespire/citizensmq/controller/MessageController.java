@@ -1,7 +1,6 @@
 package com.bluespire.citizensmq.controller;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.time.Instant;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,8 +55,9 @@ public class MessageController {
 //	private GetAllMessage allMsg;
 	
 	@PostMapping("details")
-	public String getAccountDetails(@RequestBody SavingsAccount savingsAccount ) throws IOException {
-		String response = requestResponseHandler.callMq(savingsAccount);
+	public Object getAccountDetails(@RequestBody SavingsAccount savingsAccount ) throws IOException, javax.jms.JMSException {
+		Object response = requestResponseHandler.callMq(savingsAccount);
+		System.out.println(response.toString());
 		
 		return response;
 		
@@ -69,32 +69,32 @@ public class MessageController {
 		return new ResponseEntity<String>(response, HttpStatus.OK);
 	}
 	
-	@GetMapping("/receive/{corrID}")
-	public ResponseEntity<String> receiveMessage(@PathVariable String corrID) throws UnsupportedEncodingException, JMSException, javax.jms.JMSException {
-		String receiveMessageByCorrelationId = receiver.receiveMessageByCorrelationId(corrID);
-		return new ResponseEntity<String>(receiveMessageByCorrelationId, HttpStatus.FOUND);
-	}
+//	@GetMapping("/receive/{corrID}")
+//	public ResponseEntity<String> receiveMessage(@PathVariable String corrID) throws JMSException, javax.jms.JMSException, IOException {
+//		String receiveMessageByCorrelationId = receiver.receiveMessageByCorrelationId(corrID);
+//		return new ResponseEntity<String>(receiveMessageByCorrelationId, HttpStatus.FOUND);
+//	}
+//	
 	
-	
-	@GetMapping("request")
-	public String getMethodName() throws Exception {
-//		Instant requestReceivedTime = Instant.now();
-		requestReceivedTime = System.currentTimeMillis();
-		logger.info("Contoller : Request received time : {}", requestReceivedTime);
-		
-	
-		String response = requestResponseHandler.callMq(null);
-		
-		responseSendTime=System.currentTimeMillis();
-		logger.info("Controller : Respond sent time : {}",responseSendTime);
-		
-		long processTime=responseSendTime - requestReceivedTime;
-		logger.info("Contoller :Time Taken to complete request : {}",processTime);
-		
-		
-		return response;
-	}
-	
+//	@GetMapping("request")
+//	public String getMethodName() throws Exception {
+////		Instant requestReceivedTime = Instant.now();
+//		requestReceivedTime = System.currentTimeMillis();
+//		logger.info("Contoller : Request received time : {}", requestReceivedTime);
+//		
+//	
+//		String response = requestResponseHandler.callMq(null);
+//		
+//		responseSendTime=System.currentTimeMillis();
+//		logger.info("Controller : Respond sent time : {}",responseSendTime);
+//		
+//		long processTime=responseSendTime - requestReceivedTime;
+//		logger.info("Contoller :Time Taken to complete request : {}",processTime);
+//		
+//		
+//		return response;
+//	}
+//	
 	
 //	@GetMapping("all")
 //	public String getMethodName(@RequestParam String param) throws UnsupportedEncodingException, JMSException {

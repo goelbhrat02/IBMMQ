@@ -26,10 +26,10 @@ public class RequestRespondHandler {
 		this.receiver = receiver;
 	}
 	
-	public String callMq(SavingsAccount savingsAccount) throws IOException {
+	public Object callMq(SavingsAccount savingsAccount) throws IOException, javax.jms.JMSException {
 		try {
 			String correlationId = sender.sendMessageToQueue(savingsAccount);
-			String response = receiver.receiveMessageByCorrelationId(correlationId);
+			Object response = receiver.receiveMessageByCorrelationId(correlationId);
 			return response;
 		}
 		catch (JmsException e) {

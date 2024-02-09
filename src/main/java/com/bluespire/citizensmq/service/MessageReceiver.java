@@ -1,15 +1,23 @@
 package com.bluespire.citizensmq.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
+import javax.jms.BytesMessage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 import org.springframework.stereotype.Service;
 
 import com.ibm.jakarta.jms.JMSMessage;
 import com.ibm.msg.client.jakarta.jms.JmsMessage;
+import com.bluespire.citizensmq.model.AccountDetails;
+import com.google.gson.JsonObject;
 import com.ibm.jakarta.jms.JMSBytesMessage;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
-import jakarta.jms.BytesMessage;
 import jakarta.jms.JMSException;
 import jakarta.jms.Message;
 import jakarta.jms.TextMessage;
@@ -18,6 +26,10 @@ import org.slf4j.LoggerFactory;
 
 @Service
 public class MessageReceiver {
+	
+	@Autowired
+	private GetAccountDetailsService getAccountDetailsService;
+
 
 	private final JmsTemplate jmsTemplate;
 
@@ -28,7 +40,7 @@ public class MessageReceiver {
 		this.jmsTemplate = jmsTemplate;
 	}
 
-	public String receiveMessageByCorrelationId(String correlationId) throws jakarta.jms.JMSException {
+	public Object receiveMessageByCorrelationId(String correlationId) throws jakarta.jms.JMSException, IOException {
 		// Set a receive timeout in milliseconds (e.g., 5000 for 5 seconds)
 		jmsTemplate.setReceiveTimeout(30000);
 
@@ -44,10 +56,20 @@ public class MessageReceiver {
 
 		if (receivedMessage != null) {
 			
+			System.out.println("Received message:"+receivedMessage);
 			String messageBodyStringg = receivedMessage.toString();
+			String[] lines = messageBodyStringg.split("\n");
+	        
+	        // Get the last line`
+	        String lastLine = lines[lines.length - 3]+"\n"+lines[lines.length - 2]+"\n"+lines[lines.length - 1];
+	        byte[] code=lastLine.getBytes(Charset.forName("IBM1047"));
+	        
+	        for(byte b:code)System.out.println(b);
 			messageReceivedTime = Instant.now();
 			logger.info("Services : Message Receiver :Time :{}", messageReceivedTime);
-			return messageBodyStringg;
+			String output=getAccountDetailsService.ebcdicToJson(code);
+			System.out.println(output);
+			return output;
 		} else
 			return "msg not found";
 	}
@@ -78,4 +100,46 @@ public class MessageReceiver {
 
 		return "exception found";
 	}
+	
+	
+	
+	
+//	public String receiveMessageByCorrelationId(String correlationId) throws jakarta.jms.JMSException {
+//		// Set a receive timeout in milliseconds (e.g., 5000 for 5 seconds)
+//		jmsTemplate.setReceiveTimeout(30000);
+//
+//		// Receive the message
+//		JMSMessage receivedMessage = (JMSMessage) jmsTemplate.receiveSelected("DEV.QUEUE.2",
+//				"JMSCorrelationID='" + correlationId + "'");
+////		System.out.println("Received message is : " + receivedMessage);
+//		if (receivedMessage != null) {
+//			logger.info("MessageReceiver    message received    corrId : {}" , receivedMessage.getJMSCorrelationID());
+//		}
+//
+////		return extractMessageBody(receivedMessage);
+//
+//		if (receivedMessage != null) {
+//			
+//			String messageBodyStringg = receivedMessage.toString();
+//			messageReceivedTime = Instant.now();
+//			logger.info("Services : Message Receiver :Time :{}", messageReceivedTime);
+//			return messageBodyStringg;
+//		} else
+//			return "msg not found";
+//	}
+	
+	
+	
+	
+
+
+	
+	
+	
 }
+	
+	
+	
+	
+	
+	
