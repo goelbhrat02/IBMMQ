@@ -10,7 +10,6 @@ public void setAccountNumber(long accountNumber) {
 	this.accountNumber = accountNumber;
 }
 public int getRoutingNumber() {
-	//lsUIc
 	return routingNumber;
 }
 public SavingsAccount(long accountNumber, int routingNumber) {
@@ -20,7 +19,6 @@ public SavingsAccount(long accountNumber, int routingNumber) {
 }
 public SavingsAccount() {
 	super();
-	// TODO Auto-generated constructor stub
 }
 public void setRoutingNumber(int routingNumber) {
 	this.routingNumber = routingNumber;

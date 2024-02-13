@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bluespire.citizensmq.model.AccountDetails;
 import com.bluespire.citizensmq.model.SavingsAccount;
-import com.bluespire.citizensmq.service.GetAccountDetailsService;
+import com.bluespire.citizensmq.service.Converstions;
 import com.bluespire.citizensmq.service.MessageReceiver;
 //import com.bluespire.citizensmq.service.MessageSender;
 import com.bluespire.citizensmq.service.MessageSender;
@@ -36,11 +36,6 @@ public class MessageController {
 	@Autowired
 	private MessageSender sender;
 	
-	@Autowired
-	private GetAccountDetailsService getAccountdetailsService;
-	
-	@Autowired
-	private MessageReceiver receiver;
 	
 	@Autowired
 	private RequestRespondHandler requestResponseHandler;
@@ -48,8 +43,6 @@ public class MessageController {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	
-	private long requestReceivedTime;
-	private long responseSendTime;
 	
 //	@Autowired
 //	private GetAllMessage allMsg;

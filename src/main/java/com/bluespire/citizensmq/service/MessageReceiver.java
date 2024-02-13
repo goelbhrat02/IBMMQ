@@ -1,37 +1,35 @@
 package com.bluespire.citizensmq.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
+import com.bluespire.citizensmq.model.AccountDetails;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.jms.core.JmsTemplate;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import org.springframework.stereotype.Service;
 
 import com.ibm.jms.JMSBytesMessage;
 import com.ibm.msg.client.jakarta.jms.JmsMessage;
-import com.bluespire.citizensmq.model.AccountDetails;
-import com.google.gson.JsonObject;
-
 
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 
 import jakarta.jms.BytesMessage;
 import jakarta.jms.JMSException;
-import jakarta.jms.Message;
 import jakarta.jms.TextMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Service
 public class MessageReceiver {
-	
-	@Autowired
-	private GetAccountDetailsService getAccountDetailsService;
 
+	@Autowired
+	private Converstions convertions;
+
+	@Autowired
+	ObjectMapper objectMapper;
 
 	private final JmsTemplate jmsTemplate;
 
@@ -42,7 +40,8 @@ public class MessageReceiver {
 		this.jmsTemplate = jmsTemplate;
 	}
 
-	public String receiveMessageByCorrelationId(String correlationId) throws jakarta.jms.JMSException, IOException, javax.jms.JMSException {
+	public Object receiveMessageByCorrelationId(String correlationId)
+			throws jakarta.jms.JMSException, IOException, javax.jms.JMSException {
 		// Set a receive timeout in milliseconds (e.g., 5000 for 5 seconds)
 		jmsTemplate.setReceiveTimeout(30000);
 
@@ -51,13 +50,13 @@ public class MessageReceiver {
 				"JMSCorrelationID='" + correlationId + "'");
 //		System.out.println("Received message is : " + receivedMessage);
 		if (receivedMessage != null) {
-			logger.info("MessageReceiver    message received    corrId : {}" , receivedMessage.getJMSCorrelationID());
+			logger.info("MessageReceiver    message received    corrId : {}", receivedMessage.getJMSCorrelationID());
 		}
 
 //		return extractMessageBody(receivedMessage);
 
 		if (receivedMessage != null) {
-			
+
 //			String messageBodyStringg = receivedMessage.toString();
 //			String[] lines = messageBodyStringg.split("\n");
 //	        
@@ -67,25 +66,22 @@ public class MessageReceiver {
 //	        
 //			messageReceivedTime = Instant.now();
 //			logger.info("Services : Message Receiver :Time :{}", messageReceivedTime);
-//			String output=getAccountDetailsService.ebcdicToJson(code);
+//			String output=convertions.ebcdicToJson(code);
 //			return output;
-			
-			
-				byte[] bytes=new byte[(int)receivedMessage.getBodyLength()];
-				receivedMessage.readBytes(bytes);
-				System.out.println(bytes);
-				for(byte b:bytes)System.out.println(b);
-				String str=getAccountDetailsService.ebcdicToJson(bytes);
-				return str;
-				
-			
+
+			byte[] bytes = new byte[(int) receivedMessage.getBodyLength()];
+			receivedMessage.readBytes(bytes);
+			System.out.println(bytes);
+			for (byte b : bytes)
+				System.out.println(b);
+			String str = convertions.ebcdicToJson(bytes);
+			AccountDetails accountDetails = objectMapper.readValue(str, AccountDetails.class);
+			return accountDetails;
+
 		} else
 			return null;
-	
+
 	}
-	
-	
-	
 
 	private String extractMessageBody(JmsMessage message) throws JMSException, javax.jms.JMSException {
 		// Check if the message is a TextMessage
@@ -105,15 +101,12 @@ public class MessageReceiver {
 				return "unsupported message type";
 			}
 		} catch (UnsupportedEncodingException e) {
-			logger.error("Error in service: MessageReceiver {}",e);
+			logger.error("Error in service: MessageReceiver {}", e);
 		}
 
 		return "exception found";
 	}
-	
-	
-	
-	
+
 //	public String receiveMessageByCorrelationId(String correlationId) throws jakarta.jms.JMSException {
 //		// Set a receive timeout in milliseconds (e.g., 5000 for 5 seconds)
 //		jmsTemplate.setReceiveTimeout(30000);
@@ -137,19 +130,5 @@ public class MessageReceiver {
 //		} else
 //			return "msg not found";
 //	}
-	
-	
-	
-	
 
-
-	
-	
-	
 }
-	
-	
-	
-	
-	
-	

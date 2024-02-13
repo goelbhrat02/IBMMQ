@@ -3,17 +3,12 @@ package com.bluespire.citizensmq.service;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.bluespire.citizensmq.model.AccountDetails;
-import com.bluespire.citizensmq.model.SavingsAccount;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+
 
 @Service
-public class GetAccountDetailsService {
+public class Converstions {
 	
 	
 	public byte[] jsonToEbcdic(Object object) throws IOException {

@@ -32,8 +32,8 @@ public class AccountDetails {
 	
 		@Override
 	public String toString() {
-		return "{"+"name:" + name + ", ifsc:" + ifsc + ", balance:" + balance + ", accountType:"
-				+ accountType+"}" ;
+		return "{"+"\"name\":" +"\""+ name +"\""+ ", \"ifsc\":" + "\""+ifsc +"\""+ ", \"balance\":" + balance + ", \"accountType\":"
+				+"\""+ accountType+"\""+"}" ;
 	}
 		public AccountDetails() {
 		super();

@@ -26,7 +26,7 @@ public class MessageSender {
 	private Instant messageSenderTime;
 
 	@Autowired
-	private GetAccountDetailsService getAccountDetailsService;
+	private Converstions getAccountDetailsService;
 
 	public MessageSender(JmsTemplate jmsTemplate) {
 		this.jmsTemplate = jmsTemplate;
